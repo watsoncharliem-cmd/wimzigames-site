@@ -27,3 +27,12 @@ header:before{content:'';display:block;height:6px;background:linear-gradient(90d
 .footer-links a{color:#865ca2;text-decoration:underline;text-underline-offset:3px}
 .footer-links a:hover{color:var(--pink)}
 @media(max-width:760px){.footer-links{width:100%;order:1}}
+
+/* Phone mockup in "Let the magic begin" — adjust here:
+   --phone-width   how wide the phone is (the height follows the artwork, never stretched)
+   --phone-tilt    rotation; 0deg = straight
+   --phone-mobile-width  width on phones */
+:root{--phone-width:228px;--phone-tilt:-8deg;--phone-mobile-width:210px}
+.phone{width:var(--phone-width);transform:rotate(var(--phone-tilt))}
+.phone img{width:100%;height:auto;aspect-ratio:760/1350}
+@media(max-width:760px){.phone{width:var(--phone-mobile-width)}}
