@@ -7,7 +7,7 @@
 //  - iPhone, not installed: the App Store passes nothing through, so the page shows the code to type in
 (function () {
   // Fill in once the App Store listing is live (App Store Connect → App Information → Apple ID):
-  var APP_STORE_URL = ""; // e.g. "https://apps.apple.com/app/id1234567890"
+  var APP_STORE_URL = "https://apps.apple.com/app/id6827376167"; // Wimzi Solitaire (Apple ID 6827376167)
   var PACKAGE = "com.wimzigames.solitaire";
 
   function codeFromLocation() {
