@@ -1,7 +1,9 @@
 // Friend invite page: wimzigames.com/f/CODE (also /f/?c=CODE). Used by /f/index.html and /404.html.
 // The game makes these links (FriendLinks.cs) and adds the friend automatically:
 //  - app installed: the "Open Wimzi Solitaire" button opens wimzi://friend/CODE
-//  - Android, not installed: the Google Play link carries the code; the game reads it on first launch
+//  - Android: the page jumps straight to the game (installed) or Google Play (the code rides along
+//    and the game reads it on first launch); add ?stay to the link to see the page itself
+//  - iPhone: jumps to the App Store once APP_STORE_URL is filled in
 //  - iPhone, not installed: the App Store passes nothing through, so the page shows the code to type in
 (function () {
   // Fill in once the App Store listing is live (App Store Connect → App Information → Apple ID):
@@ -38,12 +40,16 @@
   var isAndroid = /Android/i.test(ua);
   var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-  var open = document.getElementById("open-app");
-  open.href = "wimzi://friend/" + code;
-
   var referrer = encodeURIComponent("utm_source=friend&utm_medium=referral&utm_campaign=friend_invite&utm_content=" + code);
+  var playUrl = "https://play.google.com/store/apps/details?id=" + PACKAGE + "&referrer=" + referrer;
   var play = document.getElementById("google-play");
-  play.href = "https://play.google.com/store/apps/details?id=" + PACKAGE + "&referrer=" + referrer;
+  play.href = playUrl;
+
+  // Android: one link that opens the game if it's installed (friend added), else Google Play (code kept).
+  var intentUrl = "intent://friend/" + code + "#Intent;scheme=wimzi;package=" + PACKAGE +
+                  ";S.browser_fallback_url=" + encodeURIComponent(playUrl) + ";end";
+  var open = document.getElementById("open-app");
+  open.href = isAndroid ? intentUrl : "wimzi://friend/" + code;
 
   var apple = document.getElementById("app-store");
   if (APP_STORE_URL) apple.href = APP_STORE_URL;
@@ -54,6 +60,12 @@
   if (isAndroid && stores) stores.insertBefore(play, stores.firstChild);
   document.getElementById("ios-steps").hidden = isAndroid;
   document.getElementById("android-note").hidden = isIOS;
+
+  // Go straight on: Android to the game or Google Play; iPhone to the App Store once it's live.
+  // If the browser blocks the jump, this page stays as the fallback.
+  var auto = new URLSearchParams(location.search).get("stay") === null;
+  if (auto && isAndroid) setTimeout(function () { location.replace(intentUrl); }, 300);
+  else if (auto && isIOS && APP_STORE_URL) setTimeout(function () { location.href = APP_STORE_URL; }, 300);
 
   var copy = document.getElementById("copy-code");
   copy.addEventListener("click", function () {
