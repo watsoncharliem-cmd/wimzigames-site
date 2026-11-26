@@ -20,7 +20,7 @@ const crew = {
 const dialog = document.querySelector('.crew-dialog');
 document.querySelectorAll('[data-crew]').forEach(b => b.addEventListener('click', () => {
   const c = crew[b.dataset.crew];
-  dialog.querySelector('.crew-pic').src = `/assets/sky/${c.img}.webp`;
+  dialog.querySelector('.crew-pic').src = `/assets/${c.img}.webp`;
   dialog.querySelector('.crew-pic').alt = c.name;
   dialog.querySelector('h2').textContent = c.name;
   const role = dialog.querySelector('.crew-role'); role.textContent = c.role; role.style.background = c.color;
@@ -41,7 +41,7 @@ function deal() {
   deck.forEach((f, i) => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'mcard'; b.dataset.face = f;
     b.setAttribute('aria-label', `Card ${i + 1}`);
-    const img = document.createElement('img'); img.src = `/assets/sky/${f}.webp`; img.alt = ''; b.append(img);
+    const img = document.createElement('img'); img.src = `/assets/${f}.webp`; img.alt = ''; b.append(img);
     b.addEventListener('click', () => flip(b));
     board.append(b);
   });
