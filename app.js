@@ -1,14 +1,66 @@
-const holder=document.querySelector('.match-cards');
-const status=document.querySelector('.game-status');
-let chosen=[],locked=false,matches=0,round=0;
-const symbols=[{icon:'☀',name:'sunshine'},{icon:'❀',name:'flower'},{icon:'♢',name:'crystal'}];
-function setup(){round++;chosen=[];locked=false;matches=0;holder.replaceChildren();status.textContent='Ready when you are! ✦';const values=symbols.flatMap(s=>[s,s]);for(let i=values.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[values[i],values[j]]=[values[j],values[i]]}values.forEach((value,index)=>{const card=document.createElement('button');card.className='card';card.type='button';card.textContent='✦';card.setAttribute('aria-label',`Reveal card ${index+1}`);card.addEventListener('click',()=>{if(locked||card.disabled||chosen.includes(card))return;card.textContent=value.icon;card.classList.add('revealed');card.dataset.pair=value.name;card.setAttribute('aria-label',`Card ${index+1}: ${value.name}`);chosen.push(card);if(chosen.length!==2)return;if(chosen[0].dataset.pair===chosen[1].dataset.pair){chosen.forEach(c=>{c.classList.add('matched');c.disabled=true;c.setAttribute('aria-label',`${c.dataset.pair} matched`)});chosen=[];matches++;status.textContent=matches===3?'You found all three! That’s a little Wimzi magic. ♡':`${matches} of 3 happy pairs found. Keep the magic going!`;if(matches===3)celebrate()}else{locked=true;status.textContent='Almost! Another happy match is waiting.';const current=round;setTimeout(()=>{if(current!==round)return;chosen.forEach(c=>{c.textContent='✦';c.classList.remove('revealed');c.setAttribute('aria-label',`Reveal card ${[...holder.children].indexOf(c)+1}`)});chosen=[];locked=false},900)}});holder.append(card)})}
-function celebrate(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;holder.animate([{transform:'scale(1)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],{duration:450,iterations:2})}
-document.querySelector('.reset').addEventListener('click',setup);
-const dialog=document.querySelector('.friend-dialog');
-const friends={fire:{name:'A spark of sunshine',description:'A fiery little friend with golden fluff, bright eyes, and the warmest hello. A little sunshine, just for you.',art:'fire-art'},leaf:{name:'A little wild wonder',description:'Tiny flowers, leafy ears, and a smile straight from the forest. Every little adventure is better with a friend.',art:'leaf-art'},water:{name:'A splash of happy',description:'Shimmering fins and big, curious eyes. This bubbly little friend brings a splash of color wherever they go.',art:'water-art'}};
-document.querySelectorAll('[data-friend]').forEach(button=>button.addEventListener('click',()=>{const f=friends[button.dataset.friend];dialog.querySelector('h2').textContent=f.name;dialog.querySelector('.dialog-description').textContent=f.description;dialog.querySelector('.dialog-art').className=`dialog-art friend-art ${f.art}`;dialog.showModal()}));
-dialog.querySelector('.dialog-close').addEventListener('click',()=>dialog.close());
-dialog.addEventListener('click',event=>{const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()});
-dialog.querySelector('.dialog-play').addEventListener('click',()=>{dialog.close();document.querySelector('#play').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});holder.querySelector('button:not(:disabled)')?.focus({preventScroll:true})});
-document.querySelector('#year').textContent=new Date().getFullYear();setup();
+// Wimzi Games home page: store buttons, the sky crew pop-up and the "Match the crew" mini game.
+
+// App Store: set to true once Wimzi Solitaire is live on the App Store (the button then links there).
+const APP_STORE_LIVE = false;
+const APP_STORE_URL = 'https://apps.apple.com/app/id6827376167';
+document.querySelectorAll('[data-appstore]').forEach(a => {
+  if (APP_STORE_LIVE) { a.href = APP_STORE_URL; a.rel = 'noopener'; }
+  else { a.classList.add('soon'); a.setAttribute('aria-disabled', 'true'); a.querySelector('small').textContent = 'Coming soon to the'; }
+});
+
+// ---- The sky crew
+const crew = {
+  pip:   { name: 'Pip',   role: 'Crew captain', color: '#2f8cf0', img: 'crew_bunny',    bio: 'First in the cockpit and first to cheer when you win. Never met a deck that couldn\'t be shuffled.' },
+  rudy:  { name: 'Rudy',  role: 'Navigator',    color: '#43b02a', img: 'crew_raccoon',  bio: 'Has a map for everything and a knack for spotting the move everyone else missed.' },
+  fen:   { name: 'Fen',   role: 'Speed flyer',  color: '#f28a1e', img: 'crew_fox',      bio: 'Lives for a race. Challenge Fen and you\'d better play fast.' },
+  bao:   { name: 'Bao',   role: 'Co-pilot',     color: '#e0343a', img: 'crew_panda',    bio: 'Calm, steady and never in a hurry. The perfect partner for a tricky FreeCell.' },
+  ollie: { name: 'Ollie', role: 'Night watch',  color: '#8a45d6', img: 'crew_owl',      bio: 'Up all night studying Spider. Knows four suits like the back of a wing.' },
+  hazel: { name: 'Hazel', role: 'Builder',      color: '#f2c21b', img: 'crew_hedgehog', bio: 'Give Hazel a few sky stones and a castle will be back before lunch.' },
+};
+const dialog = document.querySelector('.crew-dialog');
+document.querySelectorAll('[data-crew]').forEach(b => b.addEventListener('click', () => {
+  const c = crew[b.dataset.crew];
+  dialog.querySelector('.crew-pic').src = `/assets/sky/${c.img}.webp`;
+  dialog.querySelector('.crew-pic').alt = c.name;
+  dialog.querySelector('h2').textContent = c.name;
+  const role = dialog.querySelector('.crew-role'); role.textContent = c.role; role.style.background = c.color;
+  dialog.querySelector('.crew-bio').textContent = c.bio;
+  dialog.showModal();
+}));
+dialog.querySelector('.close').addEventListener('click', () => dialog.close());
+dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+
+// ---- Match the crew (3 pairs)
+const board = document.querySelector('.match'), status = document.querySelector('.status');
+const faces = ['crew_bunny', 'crew_fox', 'crew_owl'];
+let open = [], busy = false, found = 0, round = 0;
+function deal() {
+  round++; open = []; busy = false; found = 0; board.replaceChildren(); status.textContent = 'Ready when you are!';
+  const deck = faces.flatMap(f => [f, f]);
+  for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+  deck.forEach((f, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'mcard'; b.dataset.face = f;
+    b.setAttribute('aria-label', `Card ${i + 1}`);
+    const img = document.createElement('img'); img.src = `/assets/sky/${f}.webp`; img.alt = ''; b.append(img);
+    b.addEventListener('click', () => flip(b));
+    board.append(b);
+  });
+}
+function flip(b) {
+  if (busy || b.disabled || open.includes(b)) return;
+  b.classList.add('open'); open.push(b);
+  if (open.length < 2) return;
+  if (open[0].dataset.face === open[1].dataset.face) {
+    open.forEach(c => { c.classList.add('done'); c.disabled = true; });
+    open = []; found++;
+    status.textContent = found === 3 ? 'All three pairs! The crew is ready for take-off.' : `${found} of 3 pairs found. Keep going!`;
+  } else {
+    busy = true; status.textContent = 'Not quite. Try another pair!';
+    const r = round;
+    setTimeout(() => { if (r !== round) return; open.forEach(c => c.classList.remove('open')); open = []; busy = false; }, 900);
+  }
+}
+document.querySelector('.reset').addEventListener('click', deal);
+deal();
+
+document.querySelector('#year').textContent = new Date().getFullYear();

@@ -1,31 +1,40 @@
-/* Legal / support pages (privacy, terms, delete) — matches the Wimzi homepage look. */
-:root{--purple:#492074;--pink:#eb479a;--cream:#fff8ed;--muted:#7b5d8b;--line:#ead9f3;--font:'Nunito',system-ui,sans-serif;--display:'Fredoka','Arial Rounded MT Bold',sans-serif}
+/* Legal / support pages (privacy, terms, delete) and the invite + not-found pages: the Wimzi Solitaire "sky castle" look
+   (sky blue, cream parchment, gold rims), matching the home page. Text lives in each page; this file only styles it. */
+:root{--purple:#13235e;--pink:#1f63d0;--cream:#fbf1dc;--muted:#5d6b94;--line:#ecd9ad;--navy:#13235e;--blue:#1f63d0;
+  --gold1:#ffe28a;--gold2:#e8a92a;--gold3:#b9741a;--font:'Nunito',system-ui,sans-serif;--display:'Fredoka','Arial Rounded MT Bold',sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 10% 0%,#ffe7bd60,transparent 40%),radial-gradient(ellipse at 95% 10%,#dfd6ff80,transparent 38%),var(--cream);color:var(--purple);font:600 17px/1.65 var(--font)}
-a{color:#7028cf}
-a:hover{color:var(--pink)}
+body{margin:0;background:linear-gradient(180deg,#2a7fe0 0,#6dbdf6 260px,#cfeaff 520px,#f4f9ff 760px);background-attachment:scroll;color:var(--navy);font:600 17px/1.65 var(--font);min-height:100vh}
+a{color:var(--blue)}
+a:hover{color:#163f94}
 .wrap{width:min(900px,92%);margin:0 auto}
-header{background:#fff;position:relative;z-index:2}
-header:before{content:'';display:block;height:6px;background:linear-gradient(90deg,#ff6e69,#ffac53 17%,#ffe55a 32%,#a0e75b 46%,#4ed9e9 61%,#9b7ee8 77%,#f477c6 93%)}
+header{background:#fff;position:relative;z-index:2;box-shadow:0 3px 0 var(--gold2),0 6px 18px rgba(19,35,94,.1)}
 header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:80px;flex-wrap:wrap}
-.brand{display:block;width:150px}
+.brand{display:block;width:140px}
 .brand img{display:block;width:100%;height:auto}
-nav a{margin-left:20px;font-size:14px;font-weight:900;color:var(--purple);text-decoration:none}
-nav a:hover{color:var(--pink)}
-main .wrap{background:#fff;border:4px solid transparent;border-radius:28px;margin:34px auto;padding:34px 30px;
-  background:linear-gradient(#fff,#fff) padding-box,linear-gradient(130deg,#ffae8c,#ffe578 23%,#afe479 43%,#82dfee 63%,#b399ea 82%,#f58dc6) border-box;
-  box-shadow:0 10px 0 #ead9f3,0 14px 24px #703c8a12}
-h1,h2,h3{font-family:var(--display);line-height:1.15;color:#6c2cb5}
-h1{font-size:clamp(32px,5vw,44px);font-weight:600;margin:0 0 6px;letter-spacing:-.5px}
-h2{font-size:22px;font-weight:600;margin:30px 0 8px;padding-top:16px;border-top:2px dashed var(--line)}
-h3{font-size:18px;font-weight:600;margin:18px 0 4px;color:#8a3fc0}
-p,li{color:#5b3c6e}
-.meta{color:#9c7fa2;font-size:14px;margin-bottom:18px}
+nav a{margin-left:20px;font-size:14px;font-weight:900;color:var(--navy);text-decoration:none}
+nav a:hover{color:var(--blue)}
+main .wrap{border:6px solid transparent;border-radius:28px;margin:34px auto;padding:34px 30px;
+  background:linear-gradient(180deg,#fffaf0,var(--cream)) padding-box,linear-gradient(180deg,var(--gold1),var(--gold2) 50%,var(--gold3)) border-box;
+  box-shadow:0 10px 0 rgba(185,116,26,.25),0 20px 40px rgba(19,35,94,.15)}
+h1,h2,h3{font-family:var(--display);line-height:1.15;color:var(--navy)}
+h1{font-size:clamp(32px,5vw,44px);font-weight:600;margin:0 0 6px;letter-spacing:-.3px}
+h2{font-size:22px;font-weight:600;margin:30px 0 8px;padding-top:16px;border-top:2px dashed var(--line);color:var(--blue)}
+h3{font-size:18px;font-weight:600;margin:18px 0 4px;color:#2b58b0}
+p,li{color:#2b3a6b}
+.meta{color:var(--muted);font-size:14px;margin-bottom:18px}
 ul,ol{padding-left:22px}
 li{margin:5px 0}
-.btn{display:inline-block;background:linear-gradient(#ff84c5,#f34ea1);color:#fff;border:2px solid #c13181;border-radius:99px;padding:10px 20px;font-weight:900;text-decoration:none;box-shadow:0 4px 0 #ae2b78}
-footer{background:#fff;margin-top:20px}
-footer:before{content:'';display:block;height:9px;background:linear-gradient(90deg,#ff8f65,#ffe06a 20%,#a9e26f 40%,#63d9e9 60%,#a17ce4 80%,#f48bbd)}
-footer .wrap{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:center;padding:24px 0;font-size:13px;color:#9876a2;text-align:center}
-footer a{color:#865ca2}
-@media(max-width:560px){main .wrap{padding:24px 18px;margin:18px auto;border-radius:22px}nav a{margin:0 14px 0 0}.brand{width:124px}}
+.btn{display:inline-block;background:linear-gradient(180deg,#9be055,#47a51f 60%,#2e7413);color:#fff;border:3px solid var(--gold1);border-radius:99px;padding:10px 22px;
+  font-weight:900;text-decoration:none;box-shadow:0 0 0 2px var(--gold3),0 5px 0 rgba(0,0,0,.15);text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn:hover{color:#fff;filter:brightness(1.05)}
+/* invite + not-found pages (their own small styles sit in each page; these override the colours) */
+.eyebrow-small{color:var(--blue)!important}
+.code-box{border-color:var(--gold2)!important;background:#fffaf0!important}
+.code-box b{color:var(--navy)!important}
+.store{background:linear-gradient(180deg,#5db3ff,#1f63d0 60%,#163f94)!important;border:3px solid var(--gold1);box-shadow:0 0 0 2px var(--gold3)}
+.store:hover{filter:brightness(1.06)}
+footer{background:var(--navy);margin-top:20px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:center;padding:24px 0;font-size:13px;color:#c9d4f5;text-align:center}
+footer a{color:#fff}
+footer a:hover{color:var(--gold1)}
+@media(max-width:560px){main .wrap{padding:24px 18px;margin:18px auto;border-radius:22px}nav a{margin:0 14px 0 0}.brand{width:118px}}
