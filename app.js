@@ -1,8 +1,8 @@
 // Wimzi Games home page: store buttons, the sky crew pop-up and the "Match the crew" mini game.
 
-// App Store: set to true once Wimzi Solitaire is live on the App Store (the button then links there).
-const APP_STORE_LIVE = false;
-const APP_STORE_URL = 'https://apps.apple.com/app/id6827376167';
+// App Store: the switch lives in /store.js (shared with the friend invite page).
+const APP_STORE_LIVE = !!window.APP_STORE_LIVE;
+const APP_STORE_URL = window.APP_STORE_URL || '';
 document.querySelectorAll('[data-appstore]').forEach(a => {
   if (APP_STORE_LIVE) { a.href = APP_STORE_URL; a.rel = 'noopener'; }
   else { a.classList.add('soon'); a.setAttribute('aria-disabled', 'true'); a.querySelector('small').textContent = 'Coming soon to the'; }
