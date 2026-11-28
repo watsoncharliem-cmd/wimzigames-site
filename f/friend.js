@@ -3,11 +3,11 @@
 //  - app installed: the "Open Wimzi Solitaire" button opens wimzi://friend/CODE
 //  - Android: the page jumps straight to the game (installed) or Google Play (the code rides along
 //    and the game reads it on first launch); add ?stay to the link to see the page itself
-//  - iPhone: jumps to the App Store once APP_STORE_URL is filled in
+//  - iPhone: the App Store button works once APP_STORE_LIVE is true in /store.js (until then: "Coming soon")
 //  - iPhone, not installed: the App Store passes nothing through, so the page shows the code to type in
 (function () {
-  // Fill in once the App Store listing is live (App Store Connect → App Information → Apple ID):
-  var APP_STORE_URL = "https://apps.apple.com/app/id6827376167"; // Wimzi Solitaire (Apple ID 6827376167)
+  // The App Store switch is shared with the home page: /store.js (loaded before this file)
+  var APP_STORE_URL = window.APP_STORE_LIVE ? (window.APP_STORE_URL || "") : "";
   var PACKAGE = "com.wimzigames.solitaire";
 
   function codeFromLocation() {
